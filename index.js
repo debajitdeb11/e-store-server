@@ -3,9 +3,21 @@ const express = require("express");
 const cors = require("cors");
 const envFile = require("dotenv").config();
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const path = require("path");
 
 const app = express();
+
+// Middlewares
 app.use(cors());
+app.use(express.json()); // Replacement for body-parser
+app.use(cookieParser());
+
+// Routes
+const authRoute = require("./routes/authentication");
+
+// Custom Routes
+app.use("/api", authRoute);
 
 // Check if the env file exist or not
 if (envFile.error) {
@@ -20,6 +32,8 @@ mongoose
     .connect(process.env.DATABASE_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        connectTimeoutMS: 15000,
+        useCreateIndex: true,
     })
     .then(() => {
         console.log("Database is connected successfully!");
@@ -36,7 +50,7 @@ app.get("/", (req, res) => {
 // fetch port from the .env file
 const PORT = process.env.PORT;
 
-// listen
+// PORT
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

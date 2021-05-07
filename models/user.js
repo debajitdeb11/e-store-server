@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
 
         userinfo: {
             type: String,
-            trim: required,
+            trim: true,
         },
 
         encrypted_password: {
@@ -60,7 +60,7 @@ userSchema
         return this._password;
     });
 
-userSchema.method = {
+userSchema.methods = {
     securePassword: function (plainPassword) {
         if (!plainPassword) return "";
 
