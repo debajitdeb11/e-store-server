@@ -14,10 +14,12 @@ app.use(express.json()); // Replacement for body-parser
 app.use(cookieParser());
 
 // Routes
-const authRoute = require("./routes/authentication");
+const authRoutes = require("./routes/authentication");
+const userRoutes = require("./routes/user");
 
 // Custom Routes
-app.use("/api", authRoute);
+app.use("/api", authRoutes);
+app.use("/api", userRoutes);
 
 // Check if the env file exist or not
 if (envFile.error) {
