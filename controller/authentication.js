@@ -118,7 +118,7 @@ exports.isAuthenticated = (req, res, next) => {
 
 exports.isAdmin = (req, res, next) => {
     if (req.profile.role != 2) {
-        res.status(403).json({
+        return res.status(403).json({
             error: "Not Admin, Access Denied!",
         });
     }
@@ -128,7 +128,7 @@ exports.isAdmin = (req, res, next) => {
 
 exports.isSeller = (req, res, next) => {
     if (req.profile.role != 1) {
-        res.status(403).json({
+        return res.status(403).json({
             error: "Not Seller, Access Denied!",
         });
     }

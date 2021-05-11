@@ -16,10 +16,12 @@ app.use(cookieParser());
 // Routes
 const authRoutes = require("./routes/authentication");
 const userRoutes = require("./routes/user");
+const categoryRoutes = require("./routes/category");
 
 // Custom Routes
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
+app.use("/api", categoryRoutes);
 
 // Check if the env file exist or not
 if (envFile.error) {

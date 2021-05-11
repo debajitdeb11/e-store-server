@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { getUserById, getUser, getAllUser } = require("../controller/user");
+const {
+    getUserById,
+    getUser,
+    getAllUser,
+    updateUser,
+    userPurchaseList,
+} = require("../controller/user");
 const {
     isSignedIn,
     isAuthenticated,
@@ -15,6 +21,17 @@ router.param("userId", getUserById);
 router.get("/user/:userId", isSignedIn, isAuthenticated, getUser);
 
 // Get all Users
-router.get("/users", isSignedIn, isAdmin, getAllUser);
+router.get("/users/:userId", isSignedIn, isAuthenticated, isAdmin, getAllUser);
+
+// update User
+router.put("/user/:userId", isSignedIn, isAuthenticated, updateUser);
+
+// retrives order from user account
+router.get(
+    "/user/:userId/orders",
+    isSignedIn,
+    isAuthenticated,
+    userPurchaseList
+);
 
 module.exports = router;
