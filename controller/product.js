@@ -2,7 +2,7 @@ const Product = require("../models/product");
 const formidable = require("formidable");
 const _ = require("lodash");
 const fs = require("fs");
-const { body, validationResult, cookie } = require("express-validator");
+const { validationResult } = require("express-validator");
 
 const MAX_IMAGE_SIZE = 2097152;
 
@@ -25,15 +25,22 @@ exports.getProduct = (req, res) => {
 };
 
 exports.getAllProducts = (req, res) => {
-    Product.find().exec((err, products) => {
-        if (err || !products) {
-            return res.status(400).json({
-                error: "Products not found!",
-            });
-        }
+    let limit = req.query.limit ? parseInt(req.query.limit) : 9;
+    let sortBy = req.query.sortBy ? req.query.sortBy : "_id";
 
-        return res.status(200).json(products);
-    });
+    Product.find()
+        .populate("category")
+        .sort([[sortBy, "asc"]])
+        .limit(limit)
+        .exec((err, products) => {
+            if (err || !products) {
+                return res.status(400).json({
+                    error: "Products not found!",
+                });
+            }
+
+            return res.status(200).json(products);
+        });
 };
 
 exports.createProduct = (req, res) => {
@@ -107,5 +114,42 @@ exports.deleteProduct = (req, res) => {
         return res.status(200).json({
             message: `${product.name} is successfully deleted`,
         });
+    });
+};
+
+exports.getAllUniqueCategories = (req, res) => {
+    // console.log("getAllUniqueCategories");
+
+    Product.distinct("category", {}, (err, category) => {
+        if (err) {
+            return res.status(400).json({
+                error: "No Category found",
+            });
+        }
+
+        res.json(category);
+    });
+};
+
+exports.updateStock = (req, res, next) => {
+    let myOperations = req.body.order.products.map((product) => {
+        return {
+            updateOne: {
+                filter: { _id: product._id },
+                update: {
+                    $inc: { stock: -product.count, sold: +product.count },
+                },
+            },
+        };
+    });
+
+    Product.bulkWrite(myOperations, {}, (err, products) => {
+        if (err) {
+            return res.status(400).json({
+                error: "Stock updation failed!",
+            });
+        }
+
+        next();
     });
 };

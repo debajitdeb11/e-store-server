@@ -1,5 +1,8 @@
 const express = require("express");
+const router = express.Router();
+
 const {
+    getAllUniqueCategories,
     getProductById,
     getProduct,
     getAllProducts,
@@ -14,8 +17,6 @@ const {
     isAuthenticated,
 } = require("../controller/authentication");
 const { check } = require("express-validator");
-
-const router = express.Router();
 
 // Product param
 router.param("productId", getProductById);
@@ -49,6 +50,9 @@ router.post(
     isAdmin,
     createProduct
 );
+
+// Get all unique categories
+router.get("/products/categories", getAllUniqueCategories);
 
 // Delete a product
 router.delete("/product/:productId", deleteProduct);
