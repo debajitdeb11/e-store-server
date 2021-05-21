@@ -1,7 +1,7 @@
 // Modules
 const express = require("express");
 const cors = require("cors");
-const envFile = require("dotenv").config();
+require("dotenv").config();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const path = require("path");
@@ -28,12 +28,12 @@ app.use("/api", productRoutes);
 app.use("/api", orderRoutes);
 
 // Check if the env file exist or not
-if (envFile.error) {
-    console.error("env file not found!");
-    throw envFile.error;
-} else {
-    console.log(envFile.parsed);
-}
+// if (envFile.error) {
+//     console.error("env file not found!");
+//     throw envFile.error;
+// } else {
+//     console.log(envFile.parsed);
+// }
 
 // Connect to Database
 mongoose
