@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
 });
 
 // fetch port from the .env file
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || "8000";
 
 // PORT
 app.listen(PORT, () => {
