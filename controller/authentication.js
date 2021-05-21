@@ -2,15 +2,15 @@ const User = require("../models/user");
 const { body, validationResult, cookie } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
-const user = require("../models/user");
+// const {} = require("../models/user");
 
 exports.signup = (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            ErrorsMessage: errors.array()[0].msg,
-            ErrorType: errors.array()[0].param,
+            error: errors.array()[0].msg,
+            // ErrorType: errors.array()[0].param,
         });
     }
 
@@ -19,7 +19,7 @@ exports.signup = (req, res) => {
         if (err) {
             console.error(err);
             return res.status(400).json({
-                error: "Failed to save user in Database",
+                error: "User already exist!",
             });
         }
 
@@ -36,15 +36,15 @@ exports.signin = (req, res) => {
 
     if (!errors.isEmpty()) {
         return res.status(422).json({
-            ErrorsMessage: errors.array()[0].msg,
-            ErrorType: errors.array()[0].param,
+            error: errors.array()[0].msg,
+            // ErrorType: errors.array()[0].param,
         });
     }
 
     const { email, password } = req.body;
 
     User.findOne({ email }, (err, user) => {
-        if (err) {
+        if (err || !user) {
             return res.status(400).json({
                 error: "Email not exist",
             });
@@ -71,7 +71,7 @@ exports.signin = (req, res) => {
             token,
             user: {
                 _id,
-                name,
+                firstname,
                 email,
                 role,
             },
